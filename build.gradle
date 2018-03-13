@@ -1,0 +1,40 @@
+buildscript {
+    ext.kotlin_version = '1.2.30'
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    project.ext {
+        COMPILE_SDK_VERSION = 27
+        SUPPORT_V4_VERSION = "27.1.0"
+        SUPPORT_V7_VERSION = "27.1.0"
+        ESPRESSO_VERSION = "3.0.1"
+    }
+}
+
+subprojects {
+    apply plugin: 'com.github.dcendents.android-maven'
+
+    group='com.github.tschuchortdev'
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
