@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty
  * the creation function is executed lazily or never (if assigned to before the first read)
  */
 fun <T> FragmentActivity.retained(initialize: () -> T)
-        = retained({ ViewModelProviders.of(this) }, initialize)
+        = retained(ViewModelProviders::of, initialize)
 
 /**
  * property delegate that retains a property of a Fragment in an arch ViewModel
@@ -22,15 +22,15 @@ fun <T> FragmentActivity.retained(initialize: () -> T)
  * the creation function is executed lazily or never (if assigned to before the first read)
  */
 fun <T> Fragment.retained(initialize: () -> T)
-        = retained({ ViewModelProviders.of(this) }, initialize)
+        = retained(ViewModelProviders::of, initialize)
 
-inline fun <T,S> S.retained(crossinline getVmProvider:  () -> ViewModelProvider, noinline initialize: () -> T): ReadWriteProperty<S, T>
+inline fun <T,S> S.retained(crossinline getVmProvider:  (S) -> ViewModelProvider, noinline initialize: () -> T): ReadWriteProperty<S, T>
         = object : RetainedProperty<S,T>(initialize) {
 
     // ViewModel needs to be provided lazily instead of ctor arg
     // because it's only available after onCreate
     override val retainer by lazy {
-        getVmProvider().get(RetainerViewModel::class.java)
+        getVmProvider(this@retained).get(RetainerViewModel::class.java)
     }
 }
 
